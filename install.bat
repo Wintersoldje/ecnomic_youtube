@@ -19,7 +19,7 @@ echo [1/3] Python OK
 REM Upgrade pip with --user flag (for Anaconda)
 echo [2/3] Installing packages...
 python -m pip install --upgrade pip --user -q
-pip install requests beautifulsoup4 feedparser Pillow gtts pydub moviepy --user -q
+pip install requests beautifulsoup4 feedparser Pillow gtts pydub moviepy imageio-ffmpeg --user -q
 echo [2/3] Packages installed!
 
 REM Check ffmpeg

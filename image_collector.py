@@ -55,6 +55,34 @@ DEFAULT_QUERIES = [
 ]
 
 
+def _load_korean_font(size):
+    """한글 출력 가능한 폰트를 우선 로드하고, 없으면 기본 폰트 사용"""
+    candidates = [
+        "C:/Windows/Fonts/malgun.ttf",         # 맑은 고딕
+        "C:/Windows/Fonts/malgunbd.ttf",       # 맑은 고딕 Bold
+        "C:/Windows/Fonts/NanumGothic.ttf",    # 나눔고딕(설치된 경우)
+        "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    ]
+    for path in candidates:
+        if os.path.exists(path):
+            try:
+                return ImageFont.truetype(path, size=size)
+            except Exception:
+                continue
+    return ImageFont.load_default()
+
+
+def _safe_draw_text(draw, xy, text, fill, font):
+    """구버전 Pillow/기본 폰트 환경에서도 텍스트 렌더링이 죽지 않도록 안전 처리"""
+    try:
+        draw.text(xy, text, fill=fill, font=font)
+    except Exception:
+        # 기본 폰트가 latin-1만 지원하는 경우를 위한 최종 폴백
+        fallback = text.encode("latin-1", errors="replace").decode("latin-1")
+        draw.text(xy, fallback, fill=fill, font=ImageFont.load_default())
+
+
 def keyword_to_query(keyword):
     """한국어 키워드를 영어 검색어로 변환"""
     for k, v in KEYWORD_MAP.items():
@@ -136,6 +164,16 @@ def create_placeholder_image(title, keywords, save_path, width=1080, height=1080
     img = Image.new("RGB", (width, height), bg_color)
     draw = ImageDraw.Draw(img)
 
+    def draw_rounded_box(x1, y1, x2, y2, radius, fill):
+        """
+        Pillow 구버전 호환: rounded_rectangle 미지원이면 일반 사각형으로 대체
+        """
+        rounded_fn = getattr(draw, "rounded_rectangle", None)
+        if callable(rounded_fn):
+            rounded_fn([x1, y1, x2, y2], radius=radius, fill=fill)
+        else:
+            draw.rectangle([x1, y1, x2, y2], fill=fill)
+
     # 배경 패턴 (격자 선)
     for x in range(0, width, 60):
         draw.line([(x, 0), (x, height)], fill="#ffffff10", width=1)
@@ -145,8 +183,17 @@ def create_placeholder_image(title, keywords, save_path, width=1080, height=1080
     # 상단 바
     bar_h = int(height * 0.10)
     draw.rectangle([0, 0, width, bar_h], fill="#ffffff20")
+    title_font = _load_korean_font(60 if is_shorts else 50)
+    meta_font = _load_korean_font(34 if is_shorts else 30)
+
     # 상단 텍스트 (이모지 없이)
-    draw.text((int(width * 0.05), int(bar_h * 0.25)), "[TODAY] Economic News", fill="white")
+    _safe_draw_text(
+        draw,
+        (int(width * 0.05), int(bar_h * 0.25)),
+        "[TODAY] Economic News",
+        fill="white",
+        font=meta_font,
+    )
 
     # 키워드 태그들 (이모지 없이)
     y_pos = int(height * 0.14)
@@ -154,11 +201,8 @@ def create_placeholder_image(title, keywords, save_path, width=1080, height=1080
     for kw in keywords[:3]:
         tag_text = "#" + kw
         tag_w = len(tag_text) * 20 + 24
-        draw.rounded_rectangle(
-            [x_pos, y_pos, x_pos + tag_w, y_pos + 46],
-            radius=22, fill="#ffffff30"
-        )
-        draw.text((x_pos + 12, y_pos + 9), tag_text, fill="white")
+        draw_rounded_box(x_pos, y_pos, x_pos + tag_w, y_pos + 46, radius=22, fill="#ffffff30")
+        _safe_draw_text(draw, (x_pos + 12, y_pos + 9), tag_text, fill="white", font=meta_font)
         x_pos += tag_w + 12
 
     # 제목 텍스트 (중앙)
@@ -185,10 +229,12 @@ def create_placeholder_image(title, keywords, save_path, width=1080, height=1080
     font_size = 60 if is_shorts else 50
     line_h    = font_size + 18
     for i, line in enumerate(lines[:4]):
-        draw.text(
+        _safe_draw_text(
+            draw,
             (int(width * 0.07), y_center + 10 + i * line_h),
             line,
-            fill="white"
+            fill="white",
+            font=title_font,
         )
 
     # 하단 정보 바 (이모지 없이)
@@ -197,7 +243,7 @@ def create_placeholder_image(title, keywords, save_path, width=1080, height=1080
 
     from datetime import datetime
     date_str = datetime.now().strftime("%Y.%m.%d")
-    draw.text((int(width * 0.05), bottom_y + 20), date_str, fill="#ffffffcc")
+    _safe_draw_text(draw, (int(width * 0.05), bottom_y + 20), date_str, fill="#ffffffcc", font=meta_font)
 
     img.save(save_path, quality=95)
     return True
