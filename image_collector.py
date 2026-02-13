@@ -136,6 +136,16 @@ def create_placeholder_image(title, keywords, save_path, width=1080, height=1080
     img = Image.new("RGB", (width, height), bg_color)
     draw = ImageDraw.Draw(img)
 
+    def draw_rounded_box(x1, y1, x2, y2, radius, fill):
+        """
+        Pillow 구버전 호환: rounded_rectangle 미지원이면 일반 사각형으로 대체
+        """
+        rounded_fn = getattr(draw, "rounded_rectangle", None)
+        if callable(rounded_fn):
+            rounded_fn([x1, y1, x2, y2], radius=radius, fill=fill)
+        else:
+            draw.rectangle([x1, y1, x2, y2], fill=fill)
+
     # 배경 패턴 (격자 선)
     for x in range(0, width, 60):
         draw.line([(x, 0), (x, height)], fill="#ffffff10", width=1)
@@ -154,10 +164,7 @@ def create_placeholder_image(title, keywords, save_path, width=1080, height=1080
     for kw in keywords[:3]:
         tag_text = "#" + kw
         tag_w = len(tag_text) * 20 + 24
-        draw.rounded_rectangle(
-            [x_pos, y_pos, x_pos + tag_w, y_pos + 46],
-            radius=22, fill="#ffffff30"
-        )
+        draw_rounded_box(x_pos, y_pos, x_pos + tag_w, y_pos + 46, radius=22, fill="#ffffff30")
         draw.text((x_pos + 12, y_pos + 9), tag_text, fill="white")
         x_pos += tag_w + 12
 

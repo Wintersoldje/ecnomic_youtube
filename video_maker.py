@@ -11,6 +11,8 @@ import subprocess
 from PIL import Image, ImageDraw
 import numpy as np
 
+from ffmpeg_utils import ensure_ffmpeg
+
 # ── moviepy 버전별 호환 import ──────────────────────────────
 try:
     # moviepy 1.x
@@ -41,14 +43,7 @@ KEYWORD_COLOR = "#FFD700"
 
 # ── ffmpeg 체크 ────────────────────────────────────────────
 def check_ffmpeg():
-    try:
-        subprocess.run(["ffmpeg", "-version"],
-                       stdout=subprocess.DEVNULL,
-                       stderr=subprocess.DEVNULL,
-                       check=True)
-        return True
-    except Exception:
-        return False
+    return ensure_ffmpeg() is not None
 
 
 def print_ffmpeg_guide():
