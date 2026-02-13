@@ -8,6 +8,8 @@ import os
 import sys
 import subprocess
 
+from ffmpeg_utils import configure_pydub_ffmpeg
+
 def check_and_install():
     """필요한 패키지를 자동으로 설치합니다."""
 
@@ -20,6 +22,7 @@ def check_and_install():
         ("gtts",          "gtts"),
         ("pydub",         "pydub"),
         ("moviepy",       "moviepy"),
+        ("imageio_ffmpeg", "imageio-ffmpeg"),
     ]
 
     print("📦 필요한 패키지를 확인 중...")
@@ -51,6 +54,7 @@ def check_and_install():
     print("✅ 패키지 준비 완료!\n")
 
 check_and_install()
+configure_pydub_ffmpeg()
 
 from news_collector import collect_top_news
 from script_generator import generate_scripts
