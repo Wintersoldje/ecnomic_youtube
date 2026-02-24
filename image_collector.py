@@ -36,6 +36,33 @@ KEYWORD_MAP = {
 }
 
 
+def get_font(size):
+    """한글/유니코드를 지원하는 폰트를 우선 로드"""
+    font_candidates = [
+        # Windows
+        r"C:\\Windows\\Fonts\\malgun.ttf",
+        r"C:\\Windows\\Fonts\\malgunbd.ttf",
+        r"C:\\Windows\\Fonts\\gulim.ttc",
+        # macOS
+        "/System/Library/Fonts/AppleSDGothicNeo.ttc",
+        "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+        # Linux
+        "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
+        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    ]
+
+    for font_path in font_candidates:
+        if os.path.exists(font_path):
+            try:
+                return ImageFont.truetype(font_path, size=size)
+            except Exception:
+                continue
+
+    # 최후 fallback: Pillow 기본 폰트
+    return ImageFont.load_default()
+
+
 def keyword_to_query(keyword):
     """한국어 키워드를 영어 검색어로 변환"""
     for k, v in KEYWORD_MAP.items():
@@ -90,6 +117,10 @@ def create_professional_image(title, keywords, save_path, width, height, is_shor
     # 캔버스 생성
     img = Image.new("RGB", (width, height), bg_color)
     draw = ImageDraw.Draw(img)
+    header_font = get_font(40 if is_shorts else 34)
+    tag_font = get_font(34 if is_shorts else 28)
+    title_font = get_font(54 if is_shorts else 46)
+    date_font = get_font(32 if is_shorts else 28)
     
     # 그라데이션 효과 (수평선들)
     for y in range(0, height, 2):
@@ -103,9 +134,9 @@ def create_professional_image(title, keywords, save_path, width, height, is_shor
     
     # 헤더 텍스트
     header_text = "ECONOMIC NEWS"
-    text_w = len(header_text) * 14
+    text_w = int(draw.textlength(header_text, font=header_font))
     draw.text((int((width - text_w) / 2), int(header_h * 0.2)), 
-              header_text, fill="white")
+              header_text, fill="white", font=header_font)
     
     # 키워드 태그들
     tag_y = int(height * 0.12)
@@ -116,7 +147,7 @@ def create_professional_image(title, keywords, save_path, width, height, is_shor
         # rounded_rectangle 대신 일반 rectangle 사용
         draw.rectangle([tag_x, tag_y, tag_x + tag_w, tag_y + 40], 
                       fill=accent_color, outline="white", width=2)
-        draw.text((tag_x + 10, tag_y + 8), tag_text, fill="white")
+        draw.text((tag_x + 10, tag_y + 8), tag_text, fill="white", font=tag_font)
         tag_x += tag_w + 12
     
     # 제목 영역
@@ -144,7 +175,7 @@ def create_professional_image(title, keywords, save_path, width, height, is_shor
     
     for i, line in enumerate(lines[:3]):
         y = title_y + 20 + (i * line_height)
-        draw.text((int(width * 0.08), y), line, fill="white")
+        draw.text((int(width * 0.08), y), line, fill="white", font=title_font)
     
     # 하단바
     footer_y = int(height * 0.88)
@@ -152,7 +183,7 @@ def create_professional_image(title, keywords, save_path, width, height, is_shor
     
     from datetime import datetime
     date_str = datetime.now().strftime("%Y.%m.%d")
-    draw.text((int(width * 0.05), footer_y + 15), date_str, fill=accent_color)
+    draw.text((int(width * 0.05), footer_y + 15), date_str, fill=accent_color, font=date_font)
     
     # 저장
     img.save(save_path, quality=95)
