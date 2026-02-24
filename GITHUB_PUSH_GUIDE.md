@@ -1,123 +1,140 @@
-# GitHub Push 가이드
+# GitHub 업데이트 가이드
 
-## 📋 수정된 파일
-- `video_maker.py` (자막 강화 버전)
+## 📤 변경사항
 
-## 🔄 GitHub에 업데이트하는 방법
+모든 문제가 해결된 최종 버전입니다:
 
-### 방법 1: Git 명령어 (추천)
-
-1. **Git 설치 확인**
-   - Git이 없다면: https://git-scm.com/download/win 에서 설치
-   - 명령 프롬프트에서 `git --version` 실행해서 확인
-
-2. **프로젝트 폴더로 이동**
-   ```bash
-   cd C:\Users\jewin\Desktop\economic_youtube
-   ```
-
-3. **변경사항 확인**
-   ```bash
-   git status
-   ```
-
-4. **수정된 파일 추가**
-   ```bash
-   git add video_maker.py
-   ```
-   
-   또는 모든 변경사항 추가:
-   ```bash
-   git add .
-   ```
-
-5. **커밋 (변경 내용 기록)**
-   ```bash
-   git commit -m "Fix: 자막이 확실하게 표시되도록 개선"
-   ```
-
-6. **GitHub에 푸시**
-   ```bash
-   git push origin main
-   ```
-   
-   (또는 브랜치가 master라면: `git push origin master`)
+✅ AttributeError 해결 (rounded_rectangle → rectangle)  
+✅ 자막 표시 정상화 (타이밍 정확히 맞춤)  
+✅ 이미지 생성 개선 (전문 디자인)  
+✅ 속도 차이 강화 (숏츠 1.4x, 롱폼 1.0x)  
+✅ 대본 자연스럽게 개선  
+✅ 숏츠 도입부 3초로 단축  
 
 ---
 
-### 방법 2: GitHub Desktop (GUI)
+## 🚀 GitHub에 Push하는 방법
 
-1. GitHub Desktop 설치: https://desktop.github.com/
-2. 저장소 열기: File → Add Local Repository
-3. 폴더 선택: `C:\Users\jewin\Desktop\economic_youtube`
-4. 왼쪽에서 변경된 파일 확인
-5. 하단에 커밋 메시지 입력: "자막 표시 개선"
-6. "Commit to main" 버튼 클릭
-7. 상단 "Push origin" 버튼 클릭
+### **방법 1: 명령어 (가장 빠름)**
 
----
+프로젝트 폴더에서 Git Bash 또는 cmd 실행:
 
-### 방법 3: GitHub 웹사이트 직접 업로드
-
-1. https://github.com/Wintersoldje/ecnomic_youtube 접속
-2. `video_maker.py` 파일 클릭
-3. 연필 아이콘(Edit) 클릭
-4. 전체 내용 삭제 후 새 내용 붙여넣기
-5. 하단 "Commit changes" 클릭
-
----
-
-## 📦 주요 변경 사항
-
-### video_maker.py 개선점
-✅ 자막 박스 투명도 증가 (더 진하게)
-✅ 텍스트 크기 조정 (숏츠 56px, 롱폼 46px)
-✅ 자막 위치 최적화 (하단 고정)
-✅ 구간별 자막 매칭 로직 개선
-✅ RGB 변환으로 호환성 향상
-
----
-
-## 🚀 업데이트 후 테스트
-
-push 완료 후 다시 실행:
 ```bash
-python main.py
-```
+# 현재 상태 확인
+git status
 
-이제 영상에 자막이 선명하게 표시됩니다!
+# 모든 변경사항 추가
+git add .
 
----
+# 커밋 (변경 내용 기록)
+git commit -m "Fix: All major issues resolved
 
-## ❓ Git 처음 사용하는 경우
+- Fixed AttributeError (rounded_rectangle compatibility)
+- Subtitle timing fixed
+- Professional image generation
+- Speed difference applied (1.4x shorts, 1.0x longform)
+- Natural script rewrite
+- Shorts intro reduced to 3 seconds"
 
-1. **Git 사용자 정보 설정** (최초 1회만)
-   ```bash
-   git config --global user.name "Your Name"
-   git config --global user.email "your.email@example.com"
-   ```
-
-2. **GitHub 인증** (최초 1회만)
-   - HTTPS 방식: GitHub 계정으로 로그인
-   - SSH 방식: SSH 키 생성 및 등록 필요
-
----
-
-## 🔍 문제 해결
-
-### "git is not recognized" 오류
-→ Git 설치 필요: https://git-scm.com/download/win
-
-### "Permission denied" 오류
-→ GitHub 로그인 필요 (HTTPS) 또는 SSH 키 설정 필요
-
-### "conflict" 오류
-→ 웹에서 파일을 수정했다면:
-```bash
-git pull origin main
+# GitHub에 Push
 git push origin main
 ```
 
 ---
 
-도움이 필요하면 언제든 물어보세요! 🙂
+### **방법 2: GitHub Desktop**
+
+1. GitHub Desktop 실행
+2. 저장소 열기: `File` → `Add Local Repository`
+3. 폴더 선택: `C:\Users\jewin\Documents\GitHub\ecnomic_youtube`
+4. 왼쪽에서 변경된 파일 확인
+5. 커밋 메시지 입력: "Fix: All major issues resolved"
+6. `Commit to main` 버튼 클릭
+7. 상단 `Push origin` 버튼 클릭
+
+---
+
+### **방법 3: 웹사이트 직접 업로드**
+
+각 파일을 웹에서 하나씩 수정:
+
+1. https://github.com/Wintersoldje/ecnomic_youtube 접속
+2. 파일 클릭 → 연필 아이콘(Edit) 클릭
+3. 내용 교체 후 `Commit changes` 클릭
+
+**수정할 파일:**
+- `image_collector.py`
+- `script_generator.py`
+- `tts_generator.py`
+- `video_maker.py`
+- `main.py`
+- `README.md`
+
+---
+
+## 📋 변경된 파일 목록
+
+| 파일 | 주요 변경 내용 |
+|---|---|
+| `image_collector.py` | rounded_rectangle 제거, 전문 이미지 생성 |
+| `script_generator.py` | 자연스러운 대본, 3초 훅 |
+| `tts_generator.py` | 속도 1.4x/1.0x 적용 |
+| `video_maker.py` | 자막 타이밍 정확히 맞춤 |
+| `main.py` | 패키지 설치 로직 개선 |
+| `README.md` | 문제 해결 가이드 추가 |
+
+---
+
+## ✅ Push 완료 후 확인
+
+1. https://github.com/Wintersoldje/ecnomic_youtube 접속
+2. 파일들이 업데이트됐는지 확인
+3. README에 변경사항이 반영됐는지 확인
+
+---
+
+## 🔍 문제 해결
+
+### "Permission denied"
+→ GitHub 로그인 필요. HTTPS 사용 시 계정 정보 입력
+
+### "Conflict" 오류
+→ 웹에서도 수정했다면:
+```bash
+git pull origin main
+git push origin main
+```
+
+### "git is not recognized"
+→ Git 설치: https://git-scm.com/download/win
+
+---
+
+## 📝 커밋 메시지 템플릿
+
+간단하게:
+```
+git commit -m "Fix: All issues resolved"
+```
+
+상세하게:
+```
+git commit -m "Fix: All major issues resolved
+
+- AttributeError fixed (Pillow compatibility)
+- Subtitle timing synchronized with audio
+- Professional image generation
+- Speed difference: 1.4x shorts, 1.0x longform
+- Natural conversational script
+- 3-second hook for shorts
+```
+
+---
+
+## 🎉 완료!
+
+Push 후 다른 PC에서도:
+```bash
+git pull origin main
+```
+로 최신 코드를 받을 수 있습니다!
