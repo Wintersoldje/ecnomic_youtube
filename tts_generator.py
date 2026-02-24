@@ -11,11 +11,6 @@ from pydub import AudioSegment
 import tempfile
 import time
 
-from ffmpeg_utils import configure_pydub_ffmpeg
-
-
-configure_pydub_ffmpeg()
-
 
 def create_silence(duration_ms):
     """무음 오디오 생성 (쉬는 시간)"""
